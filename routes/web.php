@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductDocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ProductDocumentController::class, 'index'])->name('home');
+
+Route::get('product-documents', [ProductDocumentController::class, 'index'])->name('product-document.index');
+Route::post('product-documents', [ProductDocumentController::class, 'store'])->name('product-document.store');
+
+// Auth::routes();
+
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

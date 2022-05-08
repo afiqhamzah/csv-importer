@@ -28,7 +28,7 @@ class ProductDocument extends Model
 	    ];
     }
 
-    public function statusLabel()
+    public function StatusLabel()
     {
 	    $list = self::listStatus();
 
@@ -49,5 +49,10 @@ class ProductDocument extends Model
 	    return Attribute::make(
 		    get: fn($value, $attributes) => Carbon::parse($attributes['created_at'])->format('y-m-d g:ia')
 	    );
+    }
+
+    public function products()
+    {
+	    return $this->hasMany(Product::class);
     }
 }

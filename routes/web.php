@@ -18,6 +18,7 @@ Route::get('/', [ProductDocumentController::class, 'index'])->name('home');
 
 Route::get('product-documents', [ProductDocumentController::class, 'index'])->name('product-document.index');
 Route::post('product-documents', [ProductDocumentController::class, 'store'])->name('product-document.store');
+Route::get('product-documents-data', [ProductDocumentController::class, 'data'])->name('product-document.data');
 
 // Auth::routes();
 

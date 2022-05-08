@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
-use App\Jobs\UploadFileBackgroundJob;
+use App\Jobs\ProcessFileBackgroundJob;
+use App\Http\Resources\ProductDocumentResource;
 
 class ProductDocumentController extends Controller
 {
@@ -41,6 +42,8 @@ class ProductDocumentController extends Controller
      */
     public function store(Request $request)
     {
+	    ini_set('max_execution_time', 600);
+
 	    $rule = [
 	            'file' => 'required',
 	            'extension' => 'required|in:csv, text, txt',
@@ -67,9 +70,11 @@ class ProductDocumentController extends Controller
                 ],
 	    );
 
-	    Storage::disk('local')->put('product_documents/' . $request->file('file')->getClientOriginalName(), $request->file('file'));
+	    $directory = 'product_documents/';
 
-	    UploadFileBackgroundJob::dispatch($product_document, $request);
+	    Storage::putFileAs($directory, $request->file('file'), $request->file('file')->getClientOriginalName());
+
+	    ProcessFileBackgroundJob::dispatch($product_document, $directory . $request->file('file')->getClientOriginalName());
 
 	    return Response::json('success', 200);
     }
@@ -117,5 +122,10 @@ class ProductDocumentController extends Controller
     public function destroy(ProductDocument $productDocument)
     {
         //
+    }
+
+    public function data()
+    {       
+            return ProductDocumentResource::collection(ProductDocument::all());
     }
 }

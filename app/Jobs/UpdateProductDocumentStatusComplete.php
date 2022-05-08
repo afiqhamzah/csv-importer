@@ -9,13 +9,16 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\ProductDocument;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ProductsImport;
 use Illuminate\Support\Facades\Storage;
 
-class UploadFileBackgroundJob implements ShouldQueue
+class UpdateProductDocumentStatusComplete implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $product_document;
+    private $file_path;
 
     /**
      * Create a new job instance.
@@ -34,22 +37,7 @@ class UploadFileBackgroundJob implements ShouldQueue
      */
     public function handle()
     {
-	    $this->product_document->update(['status' => ProductDocument::STATUS_PROCESSING]);
-
-	    
-	    try{
-		   //  Storage::disk('local')->put('product_documents/' . $this->request->file('file')->getClientOriginalName(), $this->request->file('file'));
-
-	    }catch(\Exception $e){
-
-		    logger('failed uploading file document : ');
-		    logger(print_r($this->product_document, true));
-		    logger(print_r($e, true));
-	            $this->product_document->update(['status' => ProductDocument::STATUS_FAILED]);
-
-	    }
-
-
 	    $this->product_document->update(['status' => ProductDocument::STATUS_COMPLETED]);
+
     }
 }
